@@ -1,5 +1,6 @@
 # Guide
 ## 1. Build docker container
+**Note : Make sure you have installed docker and docker-compose on your machine. If you are using new version of docker-compose(Compose V2). Try `docker compose` instead of `docker-compose`**
 
 ### 1.1. Setting up docker environment
 - Copy `.env.example` to `.env` and change the values to your needs
@@ -20,9 +21,10 @@
 - Run `docker-compose exec api php artisan migrate` to migrate database
 - Run `docker-compose exec api php artisan migrate --env=testing` to migrate database test
 
-### Testing
-- Run `docker-compose exec api php artisan test --filter TodoTest` to test feature todo
+## 3. Testing
+- Run `docker-compose exec api php artisan test --filter TodoTest` to test feature in api service
+- Run `docker-compose exec client yarn test` to test unit in client service
 
 
-## 3. Enjoy
+## 4. Enjoy
 - Go to `http://localhost:3001` to see todo app

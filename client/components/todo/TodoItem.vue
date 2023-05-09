@@ -23,11 +23,11 @@
 
     <div class="flex items-center gap-1">
       <IconWrapper @click.native="handleCancelEditMode" v-if="isEditing">
-        <img src="~/assets/icons/close.svg" alt="Delete" class="w-6 h-6 cursor-pointer"/>
+        <img src="~/assets/icons/close.svg" alt="Close" class="w-6 h-6 cursor-pointer"/>
       </IconWrapper>
 
       <IconWrapper @click.native="handleOpenEditMode" v-else>
-        <img src="~/assets/icons/pencil.svg" alt="Delete" class="w-6 h-6 cursor-pointer"/>
+        <img src="~/assets/icons/pencil.svg" alt="Edit" class="w-6 h-6 cursor-pointer"/>
       </IconWrapper>
 
       <IconWrapper @click.native="handleDeleteTodo">
