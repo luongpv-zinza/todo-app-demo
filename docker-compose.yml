@@ -1,6 +1,50 @@
 version: '3.8'
 
 services:
+  admin:
+    build:
+      args:
+        DOCKER_UID: ${DOCKER_UID:-0}
+        DOCKER_GID: ${DOCKER_GID:-0}
+      context:
+        docker/admin
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./admin/:/app
+    networks:
+      - backend-network
+
+  nginx:
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8648:80
+    volumes:
+      - ./docker/nginx/nginx/:/app
+    networks:
+      - backend-network
+
+  database:
+    container_name: todo-database
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 33001:3306
+    environment:
+      MYSQL_DATABASE: demo
+      MYSQL_ROOT_PASSWORD: admin@123
+    networks:
+      - backend-network
+    volumes:
+      - database-volume:/var/lib/mysql
+
   client:
     tty: true
     stdin_open: true
@@ -17,12 +61,14 @@ services:
     volumes:
       - ${PWD}/client/.:/app
     networks:
-      - backend-network
+      - client-network
 
 volumes:
-  mysql-vol:
+  database-volume:
     driver: local
 
 networks:
   backend-network:
+    driver: bridge
+  client-network:
     driver: bridge
