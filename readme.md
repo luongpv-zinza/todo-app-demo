@@ -16,7 +16,7 @@
 ### 2.1 Install admin service dependencies
 - Run `docker-compose exec admin composer install` to install dependencies
 - Copy `.env.example` to `.env` and change the values to your needs
-- Run `docker-compose exec key:generate` to generate application key
+- Run `docker-compose exec admin php artisan key:generate` to generate application key
 - Run `docker-compose exec admin php artisan migrate` to migrate database
 
 ## 3. Enjoy
