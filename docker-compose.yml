@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  client:
+    tty: true
+    stdin_open: true
+    restart: always
+    command: sh /docker-entrypoint.sh
+    build:
+      context: ./docker/client
+      args:
+        ENVIROMENT: ${ENVIROMENT:-DEV}
+    ports:
+      - 3001:3000
+    environment:
+      HOST: 0.0.0.0
+    volumes:
+      - ${PWD}/client/.:/app
+    networks:
+      - backend-network
+
+volumes:
+  mysql-vol:
+    driver: local
+
+networks:
+  backend-network:
+    driver: bridge
