@@ -13,11 +13,16 @@
 
 ## 2. Install dependencies
 
-### 2.1 Install admin service dependencies
-- Run `docker-compose exec admin composer install` to install dependencies
+### 2.1 Install api service dependencies
+- Run `docker-compose exec api composer install` to install dependencies
 - Copy `.env.example` to `.env` and change the values to your needs
-- Run `docker-compose exec admin php artisan key:generate` to generate application key
-- Run `docker-compose exec admin php artisan migrate` to migrate database
+- Run `docker-compose exec api php artisan key:generate` to generate application key
+- Run `docker-compose exec api php artisan migrate` to migrate database
+- Run `docker-compose exec api php artisan migrate --env=testing` to migrate database test
+
+### Testing
+- Run `docker-compose exec api php artisan test --filter TodoTest` to test feature todo
+
 
 ## 3. Enjoy
 - Go to `http://localhost:3001` to see todo app

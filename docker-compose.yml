@@ -1,20 +1,20 @@
 version: '3.8'
 
 services:
-  admin:
+  api:
     build:
       args:
         DOCKER_UID: ${DOCKER_UID:-0}
         DOCKER_GID: ${DOCKER_GID:-0}
       context:
-        docker/admin
+        docker/api
       dockerfile: Dockerfile
     tty: true
     stdin_open: true
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - ./admin/:/app
+      - ./api/:/app
     networks:
       - backend-network
 
@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     volumes:
-      - ./admin/:/app
+      - ./api/:/app
     ports:
       - 8648:80
     networks:
@@ -44,6 +44,21 @@ services:
       - backend-network
     volumes:
       - database-volume:/var/lib/mysql
+
+  database_test:
+    container_name: todo-database-test
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 33002:3306
+    environment:
+      MYSQL_DATABASE: demo_test
+      MYSQL_ROOT_PASSWORD: admin@123
+    networks:
+      - backend-network
+    volumes:
+      - database-volume-test:/var/lib/mysql
 
   client:
     tty: true
@@ -65,6 +80,8 @@ services:
 
 volumes:
   database-volume:
+    driver: local
+  database-volume-test:
     driver: local
 
 networks:
