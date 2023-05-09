@@ -2,8 +2,14 @@
   <div class="flex items-center justify-between gap-3">
     <button class="flex items-center flex-1 h-8 px-2 text-sm font-medium rounded" v-if="isEditing">
       <img src="~/assets/icons/pencil.svg" alt="Delete" class="w-6 h-6 cursor-pointer"/>
-      <input class="w-full h-8 ml-3 bg-transparent focus:outline-none font-medium" type="text"
-             placeholder="Add a new task" v-model="editedTitle" @keydown.enter="handleUpdateTodo" ref="titleTxtRef">
+      <input
+        class="w-full h-8 ml-3 bg-transparent focus:outline-none font-medium"
+        type="text"
+        v-model="editedTitle"
+        @keydown.enter="handleUpdateTodo" ref="titleTxtRef"
+        placeholder="Enter todo title"
+        :data-id="`title_input_${todo.id}`"
+      >
     </button>
 
     <div class="flex items-center gap-3 flex-1" v-else>
@@ -22,16 +28,16 @@
     </div>
 
     <div class="flex items-center gap-1">
-      <IconWrapper @click.native="handleCancelEditMode" v-if="isEditing">
+      <IconWrapper @click.capture.native="handleCancelEditMode" v-if="isEditing">
         <img src="~/assets/icons/close.svg" alt="Close" class="w-6 h-6 cursor-pointer"/>
       </IconWrapper>
 
-      <IconWrapper @click.native="handleOpenEditMode" v-else>
-        <img src="~/assets/icons/pencil.svg" alt="Edit" class="w-6 h-6 cursor-pointer"/>
+      <IconWrapper @click.capture.native="handleOpenEditMode" v-else>
+        <img src="~/assets/icons/pencil.svg" alt="Edit" :data-id="`edit_btn_${todo.id}`" class="w-6 h-6 cursor-pointer"/>
       </IconWrapper>
 
-      <IconWrapper @click.native="handleDeleteTodo">
-        <img src="~/assets/icons/trash.svg" alt="Delete" class="w-6 h-6 cursor-pointer"/>
+      <IconWrapper @click.capture.native="handleDeleteTodo">
+        <img src="~/assets/icons/trash.svg" alt="Delete" :data-id="`delete_btn_${todo.id}`" class="w-6 h-6 cursor-pointer"/>
       </IconWrapper>
     </div>
   </div>
@@ -40,7 +46,6 @@
 <script>
 import debounce from 'lodash/debounce';
 import IconWrapper from '~/components/common/IconWrapper.vue';
-import Swal from 'sweetalert2';
 
 export default {
   name: 'TodoItem',
@@ -90,7 +95,7 @@ export default {
       });
     },
     handleDeleteTodo() {
-      Swal.fire({
+      this.$swal.fire({
         title: 'Are you sure?',
         text: 'You will not be able to recover this todo!',
         icon: 'warning',
