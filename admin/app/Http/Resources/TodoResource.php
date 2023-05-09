@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin Todo
+ */
 class TodoResource extends JsonResource
 {
     /**
@@ -18,7 +22,7 @@ class TodoResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'date' => $this->date,
-            'status' => $this->status,
+            'is_completed' => $this->is_completed,
         ];
     }
 }

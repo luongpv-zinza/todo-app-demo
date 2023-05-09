@@ -7,8 +7,6 @@ RUN apk update && \
 ARG DOCKER_UID
 ARG DOCKER_GID
 
-COPY ./docker-entrypoint.sh /docker-entrypoint.sh
-
 RUN if [ ${DOCKER_UID:-0} -ne 0 ] && [ ${DOCKER_GID:-0} -ne 0 ]; then \
     deluser www-data &&\
     if getent group www-data ; then delgroup www-data; fi &&\

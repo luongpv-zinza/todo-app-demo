@@ -23,10 +23,10 @@ services:
       context: docker/nginx
       dockerfile: Dockerfile
     restart: unless-stopped
+    volumes:
+      - ./admin/:/app
     ports:
       - 8648:80
-    volumes:
-      - ./docker/nginx/nginx/:/app
     networks:
       - backend-network
 

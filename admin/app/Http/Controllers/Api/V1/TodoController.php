@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateUpdateTodoRequest;
+use App\Http\Requests\Todo\CreateTodoRequest;
+use App\Http\Requests\Todo\UpdateTodoRequest;
 use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use App\Services\TodoService;
@@ -13,7 +14,9 @@ use Illuminate\Http\Request;
 class TodoController extends Controller
 {
     use ApiResponse;
-    public $todoService;
+
+    private TodoService $todoService;
+
     public function __construct(TodoService $todoService)
     {
         $this->todoService = $todoService;
@@ -21,27 +24,29 @@ class TodoController extends Controller
 
     public function index(Request $request)
     {
-        $rs = $this->todoService->getListTodo($request->all());
+        $listTodo = $this->todoService->getListTodo();
 
-        return TodoResource::collection($rs);
+        return TodoResource::collection($listTodo);
     }
 
-    public function store(CreateUpdateTodoRequest $request)
+    public function store(CreateTodoRequest $createTodoRequest)
     {
-        $rs = $this->todoService->createTodo($request->validated());
+        $todo = $this->todoService->createTodo($createTodoRequest->validated());
 
-        return new TodoResource($rs);
+        return new TodoResource($todo);
     }
 
-    public function update(CreateUpdateTodoRequest $request, Todo $todo)
+    public function update(UpdateTodoRequest $updateTodoRequest, Todo $todo)
     {
-        $rs = $this->todoService->updateTodo($todo, $request->validated());
-        return new TodoResource($rs);
+        $updatedTodo = $this->todoService->updateTodo($todo, $updateTodoRequest->validated());
+
+        return new TodoResource($updatedTodo);
     }
 
-    public function delete(Todo $todo)
+    public function destroy(Todo $todo)
     {
         $this->todoService->deleteTodo($todo);
+
         return $this->responseNoContent();
     }
 }

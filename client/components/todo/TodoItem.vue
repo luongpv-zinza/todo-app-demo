@@ -7,7 +7,7 @@
     </button>
 
     <div class="flex items-center gap-3 flex-1" v-else>
-      <input class="hidden" type="checkbox" :id="id" :checked="todo.isCompleted" @change="handleToggleTodoCheckbox">
+      <input class="hidden" type="checkbox" :id="id" :checked="todo.is_completed" @change="handleToggleTodoCheckbox">
       <label class="flex items-center h-10 px-2 rounded cursor-pointer hover:bg-gray-100 flex-1" :for="id">
 					<span class="flex items-center justify-center w-5 h-5 text-transparent border-2 border-gray-300 rounded-full">
 						<svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
@@ -48,7 +48,7 @@ export default {
   props: {
     /**
      * The todo object
-     * @type {{ title: string, id: number, isCompleted: boolean }}
+     * @type {{ title: string, id: number, is_completed: boolean }}
      */
     todo: {
       type: Object,
@@ -71,20 +71,25 @@ export default {
     },
   },
   methods: {
-    handleToggleTodoCheckbox: debounce(function(value) {
+    handleToggleTodoCheckbox(value) {
       const isChecked = value.target.checked;
 
-      if (isChecked === this.todo.isCompleted) return;
+      if (isChecked === this.todo.is_completed) return;
 
       // TODO: call api to update todo
-      this.$emit('change-todo-status', {
+      this.$store.dispatch('todo/updateTodoById', {
         id: this.todo.id,
-        isCompleted: isChecked,
+        payload: {
+          is_completed: isChecked,
+        },
+      }).then(() => {
+        this.$emit('change-todo-status', {
+          id: this.todo.id,
+          is_completed: isChecked,
+        });
       });
-    }, 500),
+    },
     handleDeleteTodo() {
-      console.log('here');
-
       Swal.fire({
         title: 'Are you sure?',
         text: 'You will not be able to recover this todo!',
@@ -95,8 +100,9 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           // call api to delete todo
-
-          this.$emit('delete-todo', this.todo.id);
+          this.$store.dispatch('todo/deleteTodoById', this.todo.id).then(() => {
+            this.$emit('delete-todo', this.todo.id);
+          });
         }
       });
     },
@@ -108,16 +114,24 @@ export default {
         this.$refs?.titleTxtRef?.focus();
       });
     },
-    handleUpdateTodo() {
+    handleUpdateTodo: debounce(function() {
       if (!this.editedTitle) return;
 
       // call api to update todo
-      this.isEditing = false;
-      this.$emit('update-todo', {
+      this.$store.dispatch('todo/updateTodoById', {
         id: this.todo.id,
-        title: this.editedTitle,
+        payload: {
+          title: this.editedTitle,
+        },
+      }).then(() => {
+        this.$emit('update-todo', {
+          id: this.todo.id,
+          title: this.editedTitle,
+        });
+      }).finally(() => {
+        this.isEditing = false;
       });
-    },
+    }, 300),
     handleCancelEditMode() {
       this.isEditing = false;
     },

@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('todo', 'TodoController')->except(['show']);
+Route::apiResource('todo', 'TodoController')
+    ->except(['show']);
 

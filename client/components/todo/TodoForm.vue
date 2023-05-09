@@ -15,27 +15,26 @@ export default {
   data: () => {
     return {
       title: '',
-      isCreating: false
-    }
+      isCreating: false,
+    };
   },
   methods: {
     async handleCreateTodo() {
-      if(this.isCreating) return;
+      if (this.isCreating || this.title.trim() === '') return;
 
       this.isCreating = true;
 
       // call API to create todo
-      const newTodo = {
-        id: Math.random().toString(36).substr(2, 9),
+      this.$store.dispatch('todo/createTodo', {
         title: this.title,
-        isCompleted: false
-      };
-
-      this.isCreating = false;
-      this.title = '';
-      this.$emit('new-todo-created', newTodo);
-    }
-  }
+      }).then(newTodo => {
+        this.$emit('new-todo-created', newTodo);
+      }).finally(() => {
+        this.isCreating = false;
+        this.title = '';
+      });
+    },
+  },
 };
 </script>
 

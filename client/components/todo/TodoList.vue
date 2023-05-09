@@ -34,23 +34,20 @@ export default {
   name: 'TodoList',
   data: () => {
     return {
-      list: Array.from({ length: 5 }, (_, i) => ({
-        id: i + 1,
-        title: `Task ${i + 1}`,
-        isCompleted: false
-      }))
+      list: []
     }
   },
-  created() {
+  async beforeCreate() {
     // TODO: call API to get list
+    this.list = await this.$store.dispatch('todo/getTodoList');
   },
   methods: {
-    handleChangeTodoStatus({ id, isCompleted }) {
+    handleChangeTodoStatus({ id, is_completed }) {
       const index = this.list.findIndex((item) => item.id === id);
 
       this.$set(this.list, index, {
         ...this.list[index],
-        isCompleted
+        is_completed
       });
     },
     handlePushNewTodoIntoList(newTodo) {

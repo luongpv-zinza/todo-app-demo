@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Todo;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUpdateTodoRequest extends FormRequest
+class UpdateTodoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class CreateUpdateTodoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'date' => 'nullable|date_format:Y-m-d',
-            'status' => 'nullable|boolean',
+            'title'       => 'string|max:1000',
+            'is_completed' => 'boolean'
         ];
     }
 }

@@ -6,34 +6,37 @@ use App\Models\Todo;
 
 class TodoService
 {
-    protected $limit = 30;
-
-    public function getListTodo($param = [])
+    public function __construct(private readonly Todo $todo)
     {
-        $query = Todo::query();
-        if (!empty($param['q'])) {
-            $query->where('title', 'like', "%{$param['q']}%");
-        }
+    }
 
-        if (!empty($param['status'])) {
-            $query->where('status', $param['status']);
-        }
+    public function getListTodo($param = []): \Illuminate\Database\Eloquent\Collection|array
+    {
+        $query = $this->todo->query();
+        // TODO: implement search and filter if needed
+//        if (!empty($param['q'])) {
+//            $query->where('title', 'like', "%{$param['q']}%");
+//        }
+//
+//        if (!empty($param['status'])) {
+//            $query->where('status', $param['status']);
+//        }
 
         return $query->get();
     }
 
-    public function createTodo($data)
+    public function createTodo($data): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
-        return Todo::create($data);
+        return $this->todo->query()->create($data);
     }
 
-    public function updateTodo(Todo $todo, $data)
+    public function updateTodo(Todo $todo, $data): Todo
     {
         $todo->update($data);
         return $todo;
     }
 
-    public function deleteTodo(Todo $todo)
+    public function deleteTodo(Todo $todo): ?bool
     {
         return $todo->delete();
     }
